@@ -24,6 +24,18 @@
 
 package com.codepine.api.testrail;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
+import java.util.Date;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
 import com.codepine.api.testrail.internal.BooleanToIntSerializer;
 import com.codepine.api.testrail.internal.ListToCsvSerializer;
 import com.codepine.api.testrail.model.Case;
@@ -45,17 +57,6 @@ import com.codepine.api.testrail.model.User;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-
-import java.util.Date;
-
-import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * Client for Test Rail API. Configure and use it to create requests for the API.
@@ -2037,12 +2038,13 @@ public class TestRail {
         }
 
         /**
+         * @param projectId the project id to get the user for
          * Returns a list of users.
          *
          * @return the request
          */
-        public List list() {
-            return new List();
+        public List list(@NonNull int projectId) {
+            return new List(projectId);
         }
 
         public class Get extends Request<User> {
@@ -2062,10 +2064,10 @@ public class TestRail {
         }
 
         public class List extends Request<java.util.List<User>> {
-            private static final String REST_PATH = "get_users";
+            private static final String REST_PATH = "get_users/";
 
-            private List() {
-                super(config, Method.GET, REST_PATH, new TypeReference<java.util.List<User>>() {
+            private List(int projectId) {
+                super(config, Method.GET, REST_PATH + projectId, new TypeReference<java.util.List<User>>() {
                 });
             }
         }
